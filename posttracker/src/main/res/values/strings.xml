@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">UkrPostTracker</string>
+    <string name="action_settings">Settings</string>
+    <string name="track_code">Track Code</string>
+    <string name="track">Track</string>
+    <string name="wrongTrackCode">Wrong Track Code</string>
+    <string name="barcode">Barcode:</string>
+    <string name="description">Description:</string>
+    <string name="date">Date:</string>
+    <string name="code">Status Code:</string>
+    <string name="lastOffice">Post Office:</string>
+    <string name="lastIndex">Operation place index:</string>
+    <string name="noDataReceived">No data received! Check internet connection.</string>
+
+</resources>
