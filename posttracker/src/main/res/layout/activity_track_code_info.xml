@@ -11,17 +11,18 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/track_code_info"
             android:id="@+id/textView"
-            android:textSize="35sp" />
+            android:textSize="32sp"
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -73,13 +74,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/retrack"
-            android:id="@+id/btnRetrack" />
+            android:id="@+id/btnRetrack"
+            android:onClick="retrack" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/savecode"
-            android:id="@+id/btnSaveCode" />
+            android:id="@+id/btnSaveCode"
+            android:onClick="saveCode" />
+
     </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbTracking"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

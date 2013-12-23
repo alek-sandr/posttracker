@@ -14,10 +14,9 @@
     <string name="lastIndex">Index:</string>
     <string name="noDataReceived">No data received! Check internet connection.</string>
     <string name="title_activity_my_track_codes">MyTrackCodes</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_track_code_info">TrackCodeInfo</string>
     <string name="retrack">Retrack</string>
     <string name="savecode">Save code</string>
-    <string name="track_code">Track Code</string>
+    <string name="track_code">Track Code</string><string name="author">Schotkin Aleksandr</string>
 
 </resources>

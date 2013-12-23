@@ -15,5 +15,8 @@
     <string name="retrack">Повторить</string>
     <string name="savecode">Сохранить код</string>
     <string name="track_code">Трек код</string>
+    <string name="title_activity_my_track_codes">Сохраненные коды</string>
+    <string name="title_activity_track_code_info">ТрекКодИнфо</string>
+    <string name="author">Щёткин Александр</string>
 
 </resources>

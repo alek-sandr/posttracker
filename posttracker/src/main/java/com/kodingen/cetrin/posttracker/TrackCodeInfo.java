@@ -5,18 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
+    private String trackCode;
+    private String lang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_code_info);
         Intent intent = getIntent();
-        String trackCode = intent.getStringExtra("track");
-        String lang = "uk";
+        trackCode = intent.getStringExtra("track");
+        lang = "uk";
         new TrackTask(this).execute(trackCode, lang);
     }
 
@@ -41,6 +45,8 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 
     @Override
     public void onInfoReceived(BarcodeInfo info) {
+        ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
+        progress.setVisibility(View.GONE);
         if (info == null) {
             Toast.makeText(this, getString(R.string.noDataReceived), Toast.LENGTH_LONG).show();
             return;
@@ -57,5 +63,16 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 //        tvCode.setText(getString(R.string.code) + " " + info.getCode());
         TextView tvDate = (TextView) findViewById(R.id.tvInfodate);
         tvDate.setText(getString(R.string.date) + " " + info.getEventDate());
+    }
+
+    public void retrack(View v) {
+        ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
+        progress.setVisibility(View.VISIBLE);
+
+        new TrackTask(this).execute(trackCode, lang);
+    }
+
+    public void saveCode(View v) {
+        //TODO: show dialog for save code for future
     }
 }
