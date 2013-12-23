@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -23,6 +23,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kodingen.cetrin.posttracker.MyTrackCodes"
+            android:label="@string/title_activity_my_track_codes" >
+        </activity>
+        <activity
+            android:name="com.kodingen.cetrin.posttracker.TrackCodeInfo"
+            android:label="@string/title_activity_track_code_info" >
         </activity>
     </application>
 

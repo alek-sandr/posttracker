@@ -2,15 +2,18 @@
 <resources>
 
     <string name="app_name">УкрПостТрекер</string>
-    <string name="track_code">Трек код</string>
+    <string name="track_code_info">Информация по коду</string>
     <string name="track">Отследить</string>
     <string name="wrongTrackCode">Неправильный треккод</string>
     <string name="barcode">Треккод:</string>
     <string name="description">Описание:</string>
     <string name="date">Дата:</string>
     <string name="code">Код события:</string>
-    <string name="lastOffice">Объек почтовой связи:</string>
-    <string name="lastIndex">Индекс места операции:</string>
+    <string name="lastOffice">Объек связи:</string>
+    <string name="lastIndex">Индекс:</string>
     <string name="noDataReceived">Нет ответа! Проверьте связь с интернетом.</string>
+    <string name="retrack">Повторить</string>
+    <string name="savecode">Сохранить код</string>
+    <string name="track_code">Трек код</string>
 
 </resources>

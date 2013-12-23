@@ -1,24 +1,22 @@
 package com.kodingen.cetrin.posttracker;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.os.Build;
 
-public class MainActivity extends ActionBarActivity {
+public class MyTrackCodes extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_my_track_codes);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -27,10 +25,12 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.my_track_codes, menu);
         return true;
     }
 
@@ -57,38 +57,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+            View rootView = inflater.inflate(R.layout.fragment_my_track_codes, container, false);
             return rootView;
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        EditText editText = (EditText) findViewById(R.id.trackCode);
-        editText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    track(v);
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    public void track(View v) {
-        EditText edTrackCode = (EditText) findViewById(R.id.trackCode);
-        String trackCode = edTrackCode.getText().toString().trim().toUpperCase();
-        if (trackCode.length() != 13) {
-            Toast.makeText(this, getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
-            return;
-        }
-        Intent intent = new Intent(this, TrackCodeInfo.class);
-        intent.putExtra("track", trackCode);
-        startActivity(intent);
-    }
 }

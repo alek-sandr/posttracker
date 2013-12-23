@@ -40,10 +40,10 @@ public class PostTracker {
         BarcodeInfo info = new BarcodeInfo();
         info.setBarcode(data.get("barcode"));
         info.setCode(data.get("code"));
-        info.setLastOfficeIndex(data.get("lastOfficeIndex"));
-        info.setLastOffice(data.get("lastOffice"));
-        info.setEventDate(data.get("eventDate"));
-        info.setEventDescription(data.get("eventDescription"));
+        info.setLastOfficeIndex(data.get("lastofficeindex"));
+        info.setLastOffice(data.get("lastoffice"));
+        info.setEventDate(data.get("eventdate"));
+        info.setEventDescription(data.get("eventdescription"));
         return info;
     }
 
