@@ -79,19 +79,8 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 
     public void saveCode(View v) {
         DBHelper dbHelper = new DBHelper(this);
-        // create object for data
-        ContentValues cv = new ContentValues();
-        // connect to database
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        cv.put("trackcode", info.getBarcode());
-        cv.put("descr", "");
-        cv.put("statuscode", info.getCode());
-        cv.put("lastoffice", info.getLastOffice());
-        cv.put("lastindex", info.getLastOfficeIndex());
-        cv.put("eventdescr", info.getEventDescription());
-        cv.put("date", info.getEventDate());
-        long rowID = db.insert("trackcodes", null, cv);
-        if (rowID != -1) {
+        boolean result = dbHelper.addTrackCode(info, "");
+        if (result) {
             Toast.makeText(this, "Code successfully saved!", Toast.LENGTH_LONG).show();
             v.setEnabled(false);
         }
