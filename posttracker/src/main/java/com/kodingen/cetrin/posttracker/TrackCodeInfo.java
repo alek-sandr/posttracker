@@ -1,7 +1,10 @@
 package com.kodingen.cetrin.posttracker;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     private String trackCode;
     private String lang;
+    private BarcodeInfo info = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 
     @Override
     public void onInfoReceived(BarcodeInfo info) {
+        this.info = info;
         ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
         progress.setVisibility(View.GONE);
         if (info == null) {
@@ -73,6 +78,23 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     }
 
     public void saveCode(View v) {
-        //TODO: show dialog for save code for future
+        DBHelper dbHelper = new DBHelper(this);
+        // create object for data
+        ContentValues cv = new ContentValues();
+        // connect to database
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        cv.put("trackcode", info.getBarcode());
+        cv.put("descr", "");
+        cv.put("statuscode", info.getCode());
+        cv.put("lastoffice", info.getLastOffice());
+        cv.put("lastindex", info.getLastOfficeIndex());
+        cv.put("eventdescr", info.getEventDescription());
+        cv.put("date", info.getEventDate());
+        long rowID = db.insert("trackcodes", null, cv);
+        if (rowID != -1) {
+            Toast.makeText(this, "Code successfully saved!", Toast.LENGTH_LONG).show();
+            v.setEnabled(false);
+        }
+        dbHelper.close();
     }
 }
