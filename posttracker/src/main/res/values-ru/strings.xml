@@ -18,5 +18,9 @@
     <string name="title_activity_my_track_codes">Сохраненные коды</string>
     <string name="title_activity_track_code_info">ТрекКодИнфо</string>
     <string name="author">Щёткин Александр</string>
+    <string name="code_saved">Код успешно сохранен!</string>
+    <string name="code_save_failed">Ну удалось сохранить код или он уже в базе.</string>
+    <string name="lastcheck">Последняя проверка:</string>
+    <string name="delete_code">Delete code</string>
 
 </resources>

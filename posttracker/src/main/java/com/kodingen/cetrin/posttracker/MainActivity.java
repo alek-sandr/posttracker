@@ -91,4 +91,9 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("track", trackCode);
         startActivity(intent);
     }
+
+    public void myCodes(View v) {
+        Intent intent = new Intent(this, MyTrackCodes.class);
+        startActivity(intent);
+    }
 }

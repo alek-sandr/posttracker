@@ -17,6 +17,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     private String trackCode;
     private String lang;
     private BarcodeInfo info = null;
+    private boolean updateInDB = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,16 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         Intent intent = getIntent();
         trackCode = intent.getStringExtra("track");
         lang = "uk";
-        new TrackTask(this).execute(trackCode, lang);
+        boolean check = intent.getBooleanExtra("check", true);
+        if (check) {
+            new TrackTask(this).execute(trackCode, lang);
+        } else {
+            DBHelper dbHelper = new DBHelper(this);
+            dbHelper.open();
+            BarcodeInfo codeInfo = dbHelper.getInfo(trackCode);
+            dbHelper.close();
+            onInfoReceived(codeInfo);
+        }
     }
 
     @Override
@@ -68,6 +78,14 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 //        tvCode.setText(getString(R.string.code) + " " + info.getCode());
         TextView tvDate = (TextView) findViewById(R.id.tvInfodate);
         tvDate.setText(getString(R.string.date) + " " + info.getEventDate());
+        TextView tvLastCheck = (TextView) findViewById(R.id.tvLastCheck);
+        tvLastCheck.setText(getString(R.string.lastcheck) + " " + info.getLastCheck());
+        if (updateInDB) {
+            DBHelper dbHelper = new DBHelper(this);
+            dbHelper.open();
+            dbHelper.updateTrackInfo(info);
+            dbHelper.close();
+        }
     }
 
     public void retrack(View v) {
@@ -75,14 +93,24 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         progress.setVisibility(View.VISIBLE);
 
         new TrackTask(this).execute(trackCode, lang);
+
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.open();
+        if (dbHelper.isCodeInDB(trackCode)) {
+            updateInDB = true;
+        }
+        dbHelper.close();
     }
 
     public void saveCode(View v) {
         DBHelper dbHelper = new DBHelper(this);
-        boolean result = dbHelper.addTrackCode(info, "");
+        dbHelper.open();
+        boolean result = dbHelper.addTrackCode(info);
         if (result) {
-            Toast.makeText(this, "Code successfully saved!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.code_saved), Toast.LENGTH_LONG).show();
             v.setEnabled(false);
+        } else {
+            Toast.makeText(this, getString(R.string.code_save_failed), Toast.LENGTH_LONG).show();
         }
         dbHelper.close();
     }

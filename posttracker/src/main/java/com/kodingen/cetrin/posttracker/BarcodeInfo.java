@@ -2,12 +2,14 @@ package com.kodingen.cetrin.posttracker;
 
 public class BarcodeInfo {
 
-    protected String barcode;
-    protected String code;
-    protected String lastOfficeIndex;
-    protected String eventDate;
-    protected String lastOffice;
-    protected String eventDescription;
+    private String barcode;
+    private String description;
+    private String code;
+    private String lastOfficeIndex;
+    private String eventDate;
+    private String lastOffice;
+    private String eventDescription;
+    private String lastCheck;
 
     public String getBarcode() {
         return barcode;
@@ -57,4 +59,19 @@ public class BarcodeInfo {
         this.eventDescription = value;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLastCheck(String date) {
+        this.lastCheck = date;
+    }
+
+    public String getLastCheck() {
+        return lastCheck;
+    }
 }

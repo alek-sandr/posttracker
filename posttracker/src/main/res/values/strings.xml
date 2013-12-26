@@ -18,5 +18,9 @@
     <string name="retrack">Retrack</string>
     <string name="savecode">Save code</string>
     <string name="track_code">Track Code</string><string name="author">Schotkin Aleksandr</string>
+    <string name="code_saved">Code successfully saved!</string>
+    <string name="code_save_failed">Can\'t save code or it already in database.</string>
+    <string name="lastcheck">Last check:</string>
+    <string name="delete_code">Delete code</string>
 
 </resources>

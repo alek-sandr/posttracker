@@ -1,5 +1,7 @@
 package com.kodingen.cetrin.posttracker;
 
+import android.text.format.Time;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -44,6 +46,9 @@ public class PostTracker {
         info.setLastOffice(data.get("lastoffice"));
         info.setEventDate(data.get("eventdate"));
         info.setEventDescription(data.get("eventdescription"));
+        Time time = new Time();
+        time.setToNow();
+        info.setLastCheck(time.format("%c"));
         return info;
     }
 
