@@ -1,12 +1,16 @@
 package com.kodingen.cetrin.posttracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +22,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     private boolean updateInDB = false;
     private boolean codeInDB = false;
     private DBHelper dbHelper;
+    private AlertDialog saveDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,32 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
             dbHelper.close();
             onInfoReceived(codeInfo);
         }
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialogView = inflater.inflate(R.layout.save_code_dialog, null);
+
+        TextView dialogTrackCode = (TextView) dialogView.findViewById(R.id.dialodTrackCode);
+        final TextView dialogDescription = (EditText) dialogView.findViewById(R.id.edDescription);
+        dialogTrackCode.setText(trackCode);
+        final Activity activity = this;
+        saveDialog = new AlertDialog.Builder(this)
+                .setTitle("Enter description")
+                .setView(dialogView)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        info.setDescription(dialogDescription.getText().toString());
+                        dbHelper.open();
+                        boolean result = dbHelper.addTrackCode(info);
+                        if (result) {
+                            Toast.makeText(activity, getString(R.string.code_saved), Toast.LENGTH_LONG).show();
+                            activity.findViewById(R.id.btnSaveCode).setEnabled(false);
+                        } else {
+                            Toast.makeText(activity, getString(R.string.code_save_failed), Toast.LENGTH_LONG).show();
+                        }
+                        dbHelper.close();
+                    }
+                })
+                .setNegativeButton("Cancel", null).create();
     }
 
     @Override
@@ -103,15 +134,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         }
     }
 
-    public void saveCode(View v) {
-        dbHelper.open();
-        boolean result = dbHelper.addTrackCode(info);
-        if (result) {
-            Toast.makeText(this, getString(R.string.code_saved), Toast.LENGTH_LONG).show();
-            v.setEnabled(false);
-        } else {
-            Toast.makeText(this, getString(R.string.code_save_failed), Toast.LENGTH_LONG).show();
-        }
-        dbHelper.close();
+    public void saveCodeDialog(View v) {
+        saveDialog.show();
     }
 }
