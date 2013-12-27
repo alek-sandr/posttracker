@@ -57,9 +57,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            return rootView;
+            return inflater.inflate(R.layout.fragment_main, container, false);
         }
     }
 
@@ -82,7 +80,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void track(View v) {
         EditText edTrackCode = (EditText) findViewById(R.id.trackCode);
-        String trackCode = edTrackCode.getText().toString().trim().toUpperCase();
+        String trackCode = edTrackCode.getText().toString();
         if (trackCode.length() != 13) {
             Toast.makeText(this, getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
             return;

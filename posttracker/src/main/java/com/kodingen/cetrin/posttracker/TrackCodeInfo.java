@@ -1,14 +1,12 @@
 package com.kodingen.cetrin.posttracker;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +16,8 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     private String lang;
     private BarcodeInfo info = null;
     private boolean updateInDB = false;
+    private boolean codeInDB = false;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +27,17 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         trackCode = intent.getStringExtra("track");
         lang = "uk";
         boolean check = intent.getBooleanExtra("check", true);
+        dbHelper = new DBHelper(this);
+        dbHelper.open();
+        codeInDB = dbHelper.isCodeInDB(trackCode);
+        dbHelper.close();
+        if (codeInDB) {
+            Button btnSave = (Button) findViewById(R.id.btnSaveCode);
+            btnSave.setVisibility(View.GONE);
+        }
         if (check) {
             new TrackTask(this).execute(trackCode, lang);
         } else {
-            DBHelper dbHelper = new DBHelper(this);
             dbHelper.open();
             BarcodeInfo codeInfo = dbHelper.getInfo(trackCode);
             dbHelper.close();
@@ -69,7 +76,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         TextView tvTrackCode = (TextView) findViewById(R.id.tvTrackCode);
         tvTrackCode.setText(getString(R.string.barcode) + " " + info.getBarcode());
         TextView tvDescription = (TextView) findViewById(R.id.tvDescr);
-        tvDescription.setText(getString(R.string.description) + " " + info.getEventDescription().trim());
+        tvDescription.setText(getString(R.string.description) + " " + info.getEventDescription());
         TextView tvLastOffice = (TextView) findViewById(R.id.tvLastoffice);
         tvLastOffice.setText(getString(R.string.lastOffice) + " " + info.getLastOffice());
         TextView tvLastIndex = (TextView) findViewById(R.id.tvLastindex);
@@ -81,7 +88,6 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         TextView tvLastCheck = (TextView) findViewById(R.id.tvLastCheck);
         tvLastCheck.setText(getString(R.string.lastcheck) + " " + info.getLastCheck());
         if (updateInDB) {
-            DBHelper dbHelper = new DBHelper(this);
             dbHelper.open();
             dbHelper.updateTrackInfo(info);
             dbHelper.close();
@@ -91,19 +97,13 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     public void retrack(View v) {
         ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
         progress.setVisibility(View.VISIBLE);
-
         new TrackTask(this).execute(trackCode, lang);
-
-        DBHelper dbHelper = new DBHelper(this);
-        dbHelper.open();
-        if (dbHelper.isCodeInDB(trackCode)) {
+        if (codeInDB) {
             updateInDB = true;
         }
-        dbHelper.close();
     }
 
     public void saveCode(View v) {
-        DBHelper dbHelper = new DBHelper(this);
         dbHelper.open();
         boolean result = dbHelper.addTrackCode(info);
         if (result) {

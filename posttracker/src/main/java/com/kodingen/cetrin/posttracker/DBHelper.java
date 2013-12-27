@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.Time;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_TRACKCODE = "trackcode";
@@ -23,6 +24,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void open() {
         mDB = getWritableDatabase();
+    }
+
+    public void close() {
+        super.close();
+        mDB = null;
     }
 
     @Override
@@ -54,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
-        if (!isCodeInDB(info.getBarcode())) {
+        if (isCodeInDB(info.getBarcode())) {
             return false;
         }
         ContentValues cv = new ContentValues();

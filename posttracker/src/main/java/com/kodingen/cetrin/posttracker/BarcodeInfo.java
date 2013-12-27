@@ -16,7 +16,7 @@ public class BarcodeInfo {
     }
 
     public void setBarcode(String value) {
-        this.barcode = value;
+        this.barcode = value != null ? value.trim().toUpperCase() : null;
     }
 
     public String getCode() {
@@ -24,7 +24,7 @@ public class BarcodeInfo {
     }
 
     public void setCode(String value) {
-        this.code = value;
+        this.code = value != null ? value.trim() : null;
     }
 
     public String getLastOfficeIndex() {
@@ -32,7 +32,7 @@ public class BarcodeInfo {
     }
 
     public void setLastOfficeIndex(String value) {
-        this.lastOfficeIndex = value;
+        this.lastOfficeIndex = value != null ? value.trim() : null;
     }
 
     public String getEventDate() {
@@ -40,7 +40,7 @@ public class BarcodeInfo {
     }
 
     public void setEventDate(String value) {
-        this.eventDate = value;
+        this.eventDate = value != null ? value.trim() : null;
     }
 
     public String getLastOffice() {
@@ -48,7 +48,7 @@ public class BarcodeInfo {
     }
 
     public void setLastOffice(String value) {
-        this.lastOffice = value;
+        this.lastOffice = value != null ? value.trim() : null;
     }
 
     public String getEventDescription() {
@@ -56,7 +56,7 @@ public class BarcodeInfo {
     }
 
     public void setEventDescription(String value) {
-        this.eventDescription = value;
+        this.eventDescription = value != null ? value.trim() : null;
     }
 
     public String getDescription() {
@@ -64,11 +64,11 @@ public class BarcodeInfo {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description != null ? description.trim() : null;
     }
 
     public void setLastCheck(String date) {
-        this.lastCheck = date;
+        this.lastCheck = date != null ? date.trim() : null;
     }
 
     public String getLastCheck() {
