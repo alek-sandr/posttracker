@@ -16,6 +16,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "trackcodes";
     private static final int DB_VERSION = 1;
     private static final String DB_TABLE = "trackcodes";
+    public static final String COL_STATUSCODE = "statuscode";
+    public static final String COL_LASTOFFICE = "lastoffice";
+    public static final String COL_LASTINDEX = "lastindex";
+    public static final String COL_EVENTDESCR = "eventdescr";
+    public static final String COL_EVENTDATE = "eventdate";
     private SQLiteDatabase mDB;
 
     public DBHelper(Context context) {
@@ -38,11 +43,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " _id integer primary key autoincrement,"  //0
                 + COL_TRACKCODE + " text,"                   //1
                 + COL_DESCRIPTION + " text,"                 //2
-                + "statuscode text,"                         //3
-                + "lastoffice text,"                         //4
-                + "lastindex text,"                          //5
-                + "eventdescr text,"                         //6
-                + "date text,"                               //7
+                + COL_STATUSCODE + " text,"                  //3
+                + COL_LASTOFFICE + " text,"                  //4
+                + COL_LASTINDEX + " text,"                   //5
+                + COL_EVENTDESCR + " text,"                  //6
+                + COL_EVENTDATE + " text,"                   //7
                 + COL_LASTDATE + " text" + ");");            //8
     }
 
@@ -66,11 +71,11 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_TRACKCODE, info.getBarcode());
         cv.put(COL_DESCRIPTION, info.getDescription());
-        cv.put("statuscode", info.getCode());
-        cv.put("lastoffice", info.getLastOffice());
-        cv.put("lastindex", info.getLastOfficeIndex());
-        cv.put("eventdescr", info.getEventDescription());
-        cv.put("date", info.getEventDate());
+        cv.put(COL_STATUSCODE, info.getCode());
+        cv.put(COL_LASTOFFICE, info.getLastOffice());
+        cv.put(COL_LASTINDEX, info.getLastOfficeIndex());
+        cv.put(COL_EVENTDESCR, info.getEventDescription());
+        cv.put(COL_EVENTDATE, info.getEventDate());
         Time now = new Time();
         now.setToNow();
         cv.put(COL_LASTDATE, now.format("%c"));
@@ -120,11 +125,11 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_TRACKCODE, info.getBarcode());
         cv.put(COL_DESCRIPTION, info.getDescription());
-        cv.put("statuscode", info.getCode());
-        cv.put("lastoffice", info.getLastOffice());
-        cv.put("lastindex", info.getLastOfficeIndex());
-        cv.put("eventdescr", info.getEventDescription());
-        cv.put("date", info.getEventDate());
+        cv.put(COL_STATUSCODE, info.getCode());
+        cv.put(COL_LASTOFFICE, info.getLastOffice());
+        cv.put(COL_LASTINDEX, info.getLastOfficeIndex());
+        cv.put(COL_EVENTDESCR, info.getEventDescription());
+        cv.put(COL_EVENTDATE, info.getEventDate());
         cv.put(COL_LASTDATE, info.getLastCheck());
         return mDB.update(DB_TABLE, cv, COL_TRACKCODE + "=\"" + info.getBarcode() + "\"", null);
     }
