@@ -16,10 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
+    private ProgressBar progress;
     private String trackCode;
     private String lang;
-    private BarcodeInfo info = null;
-    private boolean updateInDB = false;
+    private BarcodeInfo info;
     private boolean codeInDB = false;
     private DBHelper dbHelper;
     private AlertDialog saveDialog;
@@ -28,25 +28,30 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_code_info);
+        progress = (ProgressBar) findViewById(R.id.pbTracking);
         Intent intent = getIntent();
         trackCode = intent.getStringExtra("track");
         lang = "uk";
         boolean check = intent.getBooleanExtra("check", true);
+
         dbHelper = new DBHelper(this);
         dbHelper.open();
         codeInDB = dbHelper.isCodeInDB(trackCode);
-        dbHelper.close();
-        if (codeInDB) {
+
+        if (codeInDB) { // disable save button and get info from DB
             Button btnSave = (Button) findViewById(R.id.btnSaveCode);
             btnSave.setVisibility(View.GONE);
+            info = dbHelper.getInfo(trackCode);
+        } else { // create new Barcodeinfo
+            info = new BarcodeInfo();
+            info.setBarcode(trackCode);
         }
-        if (check) {
-            new TrackTask(this).execute(trackCode, lang);
-        } else {
-            dbHelper.open();
-            BarcodeInfo codeInfo = dbHelper.getInfo(trackCode);
-            dbHelper.close();
-            onInfoReceived(codeInfo);
+        dbHelper.close();
+        if (check) { // check trackcode for changes
+            progress.setVisibility(View.VISIBLE);
+            new TrackTask(trackCode, lang, this).execute();
+        } else { // just display information
+            displayInfo(info);
         }
         LayoutInflater inflater = LayoutInflater.from(this);
         final View dialogView = inflater.inflate(R.layout.save_code_dialog, null);
@@ -76,6 +81,27 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
                 .setNegativeButton("Cancel", null).create();
     }
 
+    private void displayInfo(BarcodeInfo codeInfo) {
+        if (codeInfo == null) {
+            Toast.makeText(this, getString(R.string.noDataReceived), Toast.LENGTH_LONG).show();
+            return;
+        }
+        TextView tvTrackCode = (TextView) findViewById(R.id.tvTrackCode);
+        tvTrackCode.setText(getString(R.string.barcode) + " " + codeInfo.getBarcode());
+        TextView tvDescription = (TextView) findViewById(R.id.tvDescr);
+        tvDescription.setText(getString(R.string.description) + " " + codeInfo.getEventDescription());
+        TextView tvLastOffice = (TextView) findViewById(R.id.tvLastoffice);
+        tvLastOffice.setText(getString(R.string.lastOffice) + " " + codeInfo.getLastOffice());
+        TextView tvLastIndex = (TextView) findViewById(R.id.tvLastindex);
+        tvLastIndex.setText(getString(R.string.lastIndex) + " " + codeInfo.getLastOfficeIndex());
+//        TextView tvCode = (TextView) findViewById(R.id.tvCode);
+//        tvCode.setText(getString(R.string.code) + " " + info.getCode());
+        TextView tvDate = (TextView) findViewById(R.id.tvInfodate);
+        tvDate.setText(getString(R.string.date) + " " + codeInfo.getEventDate());
+        TextView tvLastCheck = (TextView) findViewById(R.id.tvLastCheck);
+        tvLastCheck.setText(getString(R.string.lastcheck) + " " + codeInfo.getLastCheck());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -96,29 +122,24 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     }
 
     @Override
-    public void onInfoReceived(BarcodeInfo info) {
-        this.info = info;
-        ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
+    public void onInfoReceived(BarcodeInfo newInfo) {
+        progress = (ProgressBar) findViewById(R.id.pbTracking);
         progress.setVisibility(View.GONE);
-        if (info == null) {
-            Toast.makeText(this, getString(R.string.noDataReceived), Toast.LENGTH_LONG).show();
+        if (newInfo == null) {
+            Toast.makeText(this, R.string.noDataReceived, Toast.LENGTH_LONG).show();
             return;
         }
-        TextView tvTrackCode = (TextView) findViewById(R.id.tvTrackCode);
-        tvTrackCode.setText(getString(R.string.barcode) + " " + info.getBarcode());
-        TextView tvDescription = (TextView) findViewById(R.id.tvDescr);
-        tvDescription.setText(getString(R.string.description) + " " + info.getEventDescription());
-        TextView tvLastOffice = (TextView) findViewById(R.id.tvLastoffice);
-        tvLastOffice.setText(getString(R.string.lastOffice) + " " + info.getLastOffice());
-        TextView tvLastIndex = (TextView) findViewById(R.id.tvLastindex);
-        tvLastIndex.setText(getString(R.string.lastIndex) + " " + info.getLastOfficeIndex());
-//        TextView tvCode = (TextView) findViewById(R.id.tvCode);
-//        tvCode.setText(getString(R.string.code) + " " + info.getCode());
-        TextView tvDate = (TextView) findViewById(R.id.tvInfodate);
-        tvDate.setText(getString(R.string.date) + " " + info.getEventDate());
-        TextView tvLastCheck = (TextView) findViewById(R.id.tvLastCheck);
-        tvLastCheck.setText(getString(R.string.lastcheck) + " " + info.getLastCheck());
-        if (updateInDB) {
+        if (!info.getCode().equals(newInfo.getCode())) { // status changed
+            Toast.makeText(this, info.getCode() + ":" + newInfo.getCode(), Toast.LENGTH_LONG).show();
+            info.setCode(newInfo.getCode());
+            info.setEventDate(newInfo.getEventDate());
+            info.setLastOfficeIndex(newInfo.getLastOfficeIndex());
+            info.setLastOffice(newInfo.getLastOffice());
+            info.setEventDescription(newInfo.getEventDescription());
+            info.setLastCheck(newInfo.getLastCheck());
+        }
+        displayInfo(info);
+        if (codeInDB) {
             dbHelper.open();
             dbHelper.updateTrackInfo(info);
             dbHelper.close();
@@ -128,10 +149,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
     public void retrack(View v) {
         ProgressBar progress = (ProgressBar) findViewById(R.id.pbTracking);
         progress.setVisibility(View.VISIBLE);
-        new TrackTask(this).execute(trackCode, lang);
-        if (codeInDB) {
-            updateInDB = true;
-        }
+        new TrackTask(trackCode, lang, this).execute();
     }
 
     public void saveCodeDialog(View v) {

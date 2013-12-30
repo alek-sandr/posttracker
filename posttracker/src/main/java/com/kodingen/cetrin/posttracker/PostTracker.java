@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class PostTracker {
     private static final String TEST_GUID = "fcc8d9e1-b6f9-438f-9ac8-b67ab44391dd";
+    public static final String SERVICE_URL = "http://services.ukrposhta.com/barcodestatistic/barcodestatistic.asmx/GetBarcodeInfo";
 
     public static BarcodeInfo track(String barcode, String lang) {
         return track(barcode, lang, TEST_GUID);
@@ -55,7 +56,7 @@ public class PostTracker {
     private static Map<String, String> postData(String barcode, String lang, String guid) {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://services.ukrposhta.com/barcodestatistic/barcodestatistic.asmx/GetBarcodeInfo");
+        HttpPost httppost = new HttpPost(SERVICE_URL);
         Map<String, String> data = new HashMap<String, String>();
 
         try {

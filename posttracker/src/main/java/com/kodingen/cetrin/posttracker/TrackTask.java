@@ -2,23 +2,22 @@ package com.kodingen.cetrin.posttracker;
 
 import android.os.AsyncTask;
 
-class TrackTask extends AsyncTask<String, Integer, BarcodeInfo> {
+class TrackTask extends AsyncTask<Void, Integer, BarcodeInfo> {
     private TrackInfoReceiver receiver;
+    private String barcode;
+    private String lang;
 
-    public TrackTask(TrackInfoReceiver receiver) {
+
+    public TrackTask(String barcode, String lang, TrackInfoReceiver receiver) {
         super();
+        this.barcode = barcode;
+        this.lang = lang;
         this.receiver = receiver;
     }
 
     @Override
-    protected BarcodeInfo doInBackground(String... params) {
-        if (params.length == 2) {
-            return PostTracker.track(params[0], params[1]);
-        }
-        if (params.length == 3) {
-            return PostTracker.track(params[0], params[1], params[2]);
-        }
-        throw new IllegalArgumentException();
+    protected BarcodeInfo doInBackground(Void... params) {
+        return PostTracker.track(barcode, lang);
     }
 
     @Override

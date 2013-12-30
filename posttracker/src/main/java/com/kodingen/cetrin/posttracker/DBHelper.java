@@ -12,15 +12,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_TRACKCODE = "trackcode";
     public static final String COL_DESCRIPTION = "description";
     public static final String COL_LASTDATE = "lastchecked";
-
-    private static final String DB_NAME = "trackcodes";
-    private static final int DB_VERSION = 1;
-    private static final String DB_TABLE = "trackcodes";
     public static final String COL_STATUSCODE = "statuscode";
     public static final String COL_LASTOFFICE = "lastoffice";
     public static final String COL_LASTINDEX = "lastindex";
     public static final String COL_EVENTDESCR = "eventdescr";
     public static final String COL_EVENTDATE = "eventdate";
+
+    private static final String DB_NAME = "trackcodes";
+    private static final int DB_VERSION = 1;
+    private static final String DB_TABLE = "trackcodes";
     private SQLiteDatabase mDB;
 
     public DBHelper(Context context) {

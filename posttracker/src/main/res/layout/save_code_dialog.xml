@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:text="Code:"
             android:id="@+id/textView"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:layout_margin="5dp" />
 
         <TextView
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="RF111111111SG"
             android:id="@+id/dialodTrackCode"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:layout_margin="5dp" />
     </LinearLayout>
 
@@ -32,15 +32,60 @@
         android:text="Description:"
         android:id="@+id/textView2"
         android:layout_margin="5dp"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edDescription"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:minLines="2"
         android:maxLines="2"
         android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send date"
+            android:id="@+id/textView3"
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edSendDate"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:layout_margin="5dp"
+            android:inputType="date" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max delivery days:"
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
 
 </LinearLayout>
