@@ -41,7 +41,7 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
         dbHelper = new DBHelper(this);
         dbHelper.open();
         // формируем столбцы сопоставления
-        String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTDATE };
+        String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK};
         int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked };
         adapter = new SimpleCursorAdapter(this, R.layout.item, null, from, to, 0);
         lv = (ListView) findViewById(R.id.lvMyCodes);

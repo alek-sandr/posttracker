@@ -6,17 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.Time;
-import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_TRACKCODE = "trackcode";
     public static final String COL_DESCRIPTION = "description";
-    public static final String COL_LASTDATE = "lastchecked";
+    public static final String COL_LASTCHECK = "lastchecked";
     public static final String COL_STATUSCODE = "statuscode";
     public static final String COL_LASTOFFICE = "lastoffice";
     public static final String COL_LASTINDEX = "lastindex";
     public static final String COL_EVENTDESCR = "eventdescr";
     public static final String COL_EVENTDATE = "eventdate";
+    public static final String COL_SENDDATE = "senddate";
+    public static final String COL_DAYSFORDELIVERY = "daysfordelivery";
 
     private static final String DB_NAME = "trackcodes";
     private static final int DB_VERSION = 1;
@@ -48,7 +49,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + COL_LASTINDEX + " text,"                   //5
                 + COL_EVENTDESCR + " text,"                  //6
                 + COL_EVENTDATE + " text,"                   //7
-                + COL_LASTDATE + " text" + ");");            //8
+                + COL_LASTCHECK + " text,"                   //8
+                + COL_SENDDATE + " integer,"                 //9
+                + COL_DAYSFORDELIVERY + " integer);");       //10
     }
 
     @Override
@@ -68,18 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (isCodeInDB(info.getBarcode())) {
             return false;
         }
-        ContentValues cv = new ContentValues();
-        cv.put(COL_TRACKCODE, info.getBarcode());
-        cv.put(COL_DESCRIPTION, info.getDescription());
-        cv.put(COL_STATUSCODE, info.getCode());
-        cv.put(COL_LASTOFFICE, info.getLastOffice());
-        cv.put(COL_LASTINDEX, info.getLastOfficeIndex());
-        cv.put(COL_EVENTDESCR, info.getEventDescription());
-        cv.put(COL_EVENTDATE, info.getEventDate());
-        Time now = new Time();
-        now.setToNow();
-        cv.put(COL_LASTDATE, now.format("%c"));
-        long rowID = mDB.insert(DB_TABLE, null, cv);
+        long rowID = mDB.insert(DB_TABLE, null, codeinfoToCV(info));
         if (rowID == -1) {
             return false;
         }
@@ -87,6 +79,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public BarcodeInfo getInfo(String trackcode) {
+        if (mDB == null) {
+            throw new IllegalStateException("Connection to database not open");
+        }
         Cursor info = mDB.query(DB_TABLE, null, COL_TRACKCODE + "=\"" + trackcode.toUpperCase() + "\"", null, null, null, null);
         if (info.getCount() == 0) {
             return null;
@@ -101,6 +96,8 @@ public class DBHelper extends SQLiteOpenHelper {
         codeInfo.setEventDescription(info.getString(6));
         codeInfo.setEventDate(info.getString(7));
         codeInfo.setLastCheck(info.getString(8));
+        codeInfo.setSendDate(info.getLong(9));
+        codeInfo.setMaxDeliveryDays(info.getInt(10));
         return codeInfo;
     }
 
@@ -122,6 +119,10 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
+        return mDB.update(DB_TABLE, codeinfoToCV(info), COL_TRACKCODE + "=\"" + info.getBarcode() + "\"", null);
+    }
+
+    private ContentValues codeinfoToCV(BarcodeInfo info) {
         ContentValues cv = new ContentValues();
         cv.put(COL_TRACKCODE, info.getBarcode());
         cv.put(COL_DESCRIPTION, info.getDescription());
@@ -130,7 +131,9 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COL_LASTINDEX, info.getLastOfficeIndex());
         cv.put(COL_EVENTDESCR, info.getEventDescription());
         cv.put(COL_EVENTDATE, info.getEventDate());
-        cv.put(COL_LASTDATE, info.getLastCheck());
-        return mDB.update(DB_TABLE, cv, COL_TRACKCODE + "=\"" + info.getBarcode() + "\"", null);
+        cv.put(COL_LASTCHECK, info.getLastCheck());
+        cv.put(COL_SENDDATE, info.getSendDate());
+        cv.put(COL_DAYSFORDELIVERY, info.getMaxDeliveryDays());
+        return cv;
     }
 }

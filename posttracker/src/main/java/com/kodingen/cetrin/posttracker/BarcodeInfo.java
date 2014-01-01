@@ -87,14 +87,12 @@ public class BarcodeInfo {
         this.maxDeliveryDays = maxDeliveryDays;
     }
 
-    public Time getSendDate() {
-        Time date = new Time();
-        date.set(sendDate);
-        return date;
+    public long getSendDate() {
+        return sendDate;
     }
 
-    public void setSendDate(Time date) {
-        this.sendDate = date.toMillis(true);
+    public void setSendDate(Long milliseconds) {
+        this.sendDate = milliseconds;
     }
 
     public int daysToDeadline() {
