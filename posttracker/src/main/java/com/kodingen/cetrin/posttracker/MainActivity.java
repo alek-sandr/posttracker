@@ -85,8 +85,8 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(this, getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
             return;
         }
-        Intent intent = new Intent(this, TrackCodeInfo.class);
-        intent.putExtra("track", trackCode);
+        Intent intent = new Intent(TrackCodeInfo.ACTION_TRACKANDSHOW);
+        intent.putExtra(TrackCodeInfo.TRACKCODE, trackCode);
         startActivity(intent);
     }
 

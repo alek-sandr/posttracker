@@ -31,6 +31,11 @@
         <activity
             android:name="com.kodingen.cetrin.posttracker.TrackCodeInfo"
             android:label="@string/title_activity_track_code_info" >
+            <intent-filter>
+                <action android:name="com.kodingen.cetrin.posttracker.intent.action.showinfo" />
+                <action android:name="com.kodingen.cetrin.posttracker.intent.action.trackandshow" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

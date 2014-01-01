@@ -50,9 +50,8 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView tvTrackCode = (TextView) view.findViewById(R.id.tvTrackCodeItem);
-                Intent intent = new Intent(ctx, TrackCodeInfo.class);
-                intent.putExtra("track", tvTrackCode.getText());
-                intent.putExtra("check", false);
+                Intent intent = new Intent(TrackCodeInfo.ACTION_SHOWINFO);
+                intent.putExtra(TrackCodeInfo.TRACKCODE, tvTrackCode.getText());
                 startActivity(intent);
             }
         });

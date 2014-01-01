@@ -16,13 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
-    private ProgressBar progress;
+    public static final String ACTION_SHOWINFO = "com.kodingen.cetrin.posttracker.intent.action.showinfo";
+    public static final String ACTION_TRACKANDSHOW = "com.kodingen.cetrin.posttracker.intent.action.trackandshow";
+    public static final String TRACKCODE = "track";
+
     private String trackCode;
     private String lang;
     private BarcodeInfo info;
     private boolean codeInDB = false;
     private DBHelper dbHelper;
     private AlertDialog saveDialog;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +34,9 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         setContentView(R.layout.activity_track_code_info);
         progress = (ProgressBar) findViewById(R.id.pbTracking);
         Intent intent = getIntent();
-        trackCode = intent.getStringExtra("track");
+        trackCode = intent.getStringExtra(TRACKCODE);
         lang = "uk";
-        boolean check = intent.getBooleanExtra("check", true);
+        String action = intent.getAction();
 
         dbHelper = new DBHelper(this);
         dbHelper.open();
@@ -47,7 +51,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
             info.setBarcode(trackCode);
         }
         dbHelper.close();
-        if (check) { // check trackcode for changes
+        if (action.equals(ACTION_TRACKANDSHOW)) { // check trackcode for changes
             progress.setVisibility(View.VISIBLE);
             new TrackTask(trackCode, lang, this).execute();
         } else { // just display information
@@ -130,14 +134,13 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
             return;
         }
         if (!info.getCode().equals(newInfo.getCode())) { // status changed
-            Toast.makeText(this, info.getCode() + ":" + newInfo.getCode(), Toast.LENGTH_LONG).show();
             info.setCode(newInfo.getCode());
             info.setEventDate(newInfo.getEventDate());
             info.setLastOfficeIndex(newInfo.getLastOfficeIndex());
             info.setLastOffice(newInfo.getLastOffice());
             info.setEventDescription(newInfo.getEventDescription());
-            info.setLastCheck(newInfo.getLastCheck());
         }
+        info.setLastCheck(newInfo.getLastCheck());
         displayInfo(info);
         if (codeInDB) {
             dbHelper.open();
