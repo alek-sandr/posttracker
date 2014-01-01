@@ -44,4 +44,14 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10"
+        android:id="@+id/tvDaysLeft"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:textSize="18sp" />
 </LinearLayout>

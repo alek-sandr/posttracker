@@ -3,12 +3,14 @@ package com.kodingen.cetrin.posttracker;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,10 +43,14 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
         dbHelper = new DBHelper(this);
         dbHelper.open();
         // формируем столбцы сопоставления
-        String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK};
-        int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked };
+        String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK, DBHelper.COL_SENDDATE};
+        int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked, R.id.tvDaysLeft };
         adapter = new SimpleCursorAdapter(this, R.layout.item, null, from, to, 0);
         lv = (ListView) findViewById(R.id.lvMyCodes);
+        Time now = new Time();
+        now.setToNow();
+        long currentTime = now.toMillis(false);
+        adapter.setViewBinder(new MyBinder(currentTime));
         lv.setAdapter(adapter);
         final Context ctx = this;
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -155,6 +161,37 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
         @Override
         public Cursor loadInBackground() {
             return dbHelper.getAllData();
+        }
+    }
+
+    private class MyBinder implements SimpleCursorAdapter.ViewBinder {
+        private final long currentTime;
+
+        public MyBinder(long currentTime) {
+            this.currentTime = currentTime;
+        }
+
+        @Override
+        public boolean setViewValue(View view, Cursor cursor, int i) {
+            if (view.getId() != R.id.tvDaysLeft) {
+                return false;
+            }
+            String name = cursor.getColumnName(i);
+            if (name.equals(DBHelper.COL_SENDDATE)) {
+                long sendDate = cursor.getLong(i);
+                int maxDays = cursor.getInt(i + 1); //COL_DAYSFORDELIVERY next column to COL_SENDDATE
+                int daysLeft = (int) (sendDate + maxDays * 86400000 - currentTime) / 86400000;
+                if (sendDate == 0 || daysLeft == 0) { //fields not specified
+                    view.setVisibility(View.GONE);
+                    return true;
+                }
+                ((TextView) view).setText(Integer.toString(daysLeft));
+                if (daysLeft < 5) {
+                    view.setBackgroundColor(Color.RED);
+                }
+                return true;
+            }
+            return false;
         }
     }
 }
