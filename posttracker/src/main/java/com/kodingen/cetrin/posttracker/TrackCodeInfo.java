@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
+public class TrackCodeInfo extends Activity implements TrackInfoReceiver, DialogResultReceiver {
     public static final String ACTION_SHOWINFO = "com.kodingen.cetrin.posttracker.intent.action.showinfo";
     public static final String ACTION_TRACKANDSHOW = "com.kodingen.cetrin.posttracker.intent.action.trackandshow";
     public static final String TRACKCODE = "track";
@@ -57,32 +57,7 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
         } else { // just display information
             displayInfo(info);
         }
-        LayoutInflater inflater = LayoutInflater.from(this);
-        final View dialogView = inflater.inflate(R.layout.save_code_dialog, null);
-
-        TextView dialogTrackCode = (TextView) dialogView.findViewById(R.id.dialodTrackCode);
-        final TextView dialogDescription = (EditText) dialogView.findViewById(R.id.edDescription);
-        dialogTrackCode.setText(trackCode);
-        final Activity activity = this;
-        saveDialog = new AlertDialog.Builder(this)
-                .setTitle("Enter description")
-                .setView(dialogView)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        info.setDescription(dialogDescription.getText().toString());
-                        dbHelper.open();
-                        boolean result = dbHelper.addTrackCode(info);
-                        if (result) {
-                            Toast.makeText(activity, getString(R.string.code_saved), Toast.LENGTH_LONG).show();
-                            activity.findViewById(R.id.btnSaveCode).setEnabled(false);
-                        } else {
-                            Toast.makeText(activity, getString(R.string.code_save_failed), Toast.LENGTH_LONG).show();
-                        }
-                        dbHelper.close();
-                    }
-                })
-                .setNegativeButton("Cancel", null).create();
+        saveDialog = DialogBuilder.getEditDialog(this, info, this);
     }
 
     private void displayInfo(BarcodeInfo codeInfo) {
@@ -157,5 +132,16 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver {
 
     public void saveCodeDialog(View v) {
         saveDialog.show();
+    }
+
+    @Override
+    public void onSuccess() {
+        Toast.makeText(this, getString(R.string.code_saved), Toast.LENGTH_LONG).show();
+        findViewById(R.id.btnSaveCode).setEnabled(false);
+    }
+
+    @Override
+    public void onFail() {
+        Toast.makeText(this, getString(R.string.code_save_failed), Toast.LENGTH_LONG).show();
     }
 }

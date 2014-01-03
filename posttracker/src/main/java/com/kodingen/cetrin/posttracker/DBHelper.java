@@ -28,8 +28,14 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    public boolean isOpen() {
+        return mDB != null;
+    }
+
     public void open() {
-        mDB = getWritableDatabase();
+        if (mDB == null) {
+            mDB = getWritableDatabase();
+        }
     }
 
     public void close() {

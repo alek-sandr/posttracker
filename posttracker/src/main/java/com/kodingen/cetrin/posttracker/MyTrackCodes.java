@@ -8,15 +8,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,7 +38,6 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
 //        }
 
         dbHelper = new DBHelper(this);
-        dbHelper.open();
         // формируем столбцы сопоставления
         String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK, DBHelper.COL_SENDDATE};
         int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked, R.id.tvDaysLeft };
@@ -52,7 +48,6 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
         long currentTime = now.toMillis(false);
         adapter.setViewBinder(new MyBinder(currentTime));
         lv.setAdapter(adapter);
-        final Context ctx = this;
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView tvTrackCode = (TextView) view.findViewById(R.id.tvTrackCodeItem);
@@ -114,7 +109,9 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbHelper.close();
+        if (dbHelper.isOpen()) {
+            dbHelper.close();
+        }
     }
 
     @Override
@@ -132,23 +129,22 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
 
     }
 
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_my_track_codes, container, false);
-            //lv = (ListView) rootView.findViewById(R.id.lvMyCodes);
-            return rootView;
-        }
-    }
+//    /**
+//     * A placeholder fragment containing a simple view.
+//     */
+//    public static class PlaceholderFragment extends Fragment {
+//
+//        public PlaceholderFragment() {
+//        }
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                Bundle savedInstanceState) {
+//            View rootView = inflater.inflate(R.layout.fragment_my_track_codes, container, false);
+//            //lv = (ListView) rootView.findViewById(R.id.lvMyCodes);
+//            return rootView;
+//        }
+//    }
 
     static class MyCursorLoader extends CursorLoader {
         private DBHelper dbHelper;
@@ -160,6 +156,9 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
 
         @Override
         public Cursor loadInBackground() {
+            if (!dbHelper.isOpen()) { //when rotate activity it closes dbHelper
+                dbHelper.open();
+            }
             return dbHelper.getAllData();
         }
     }
