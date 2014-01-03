@@ -8,7 +8,7 @@
     <string name="barcode">Треккод:</string>
     <string name="description">Описание:</string>
     <string name="date">Дата:</string>
-    <string name="code">Код события:</string>
+    <string name="status_code">Код события:</string>
     <string name="lastOffice">Объек связи:</string>
     <string name="lastIndex">Индекс:</string>
     <string name="noDataReceived">Нет ответа! Проверьте связь с интернетом.</string>
@@ -21,6 +21,15 @@
     <string name="code_saved">Код успешно сохранен!</string>
     <string name="code_save_failed">Ну удалось сохранить код или он уже в базе.</string>
     <string name="lastcheck">Последняя проверка:</string>
-    <string name="delete_code">Удалить код</string>
+    <string name="delete">Удалить код</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="wrong_date">Некорректная дата!</string>
+    <string name="wrong_day">Некорректное количество дней!</string>
+    <string name="edit">Изменить</string>
+    <string name="send_date">Дата отправки:</string>
+    <string name="max_delivery_days">Макс срок (дней):</string>
+    <string name="item_description">Описание:</string>
+    <string name="code">Треккод:</string>
 
 </resources>

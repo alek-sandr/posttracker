@@ -93,6 +93,22 @@ public class DBHelper extends SQLiteOpenHelper {
             return null;
         }
         info.moveToFirst();
+        return rawInfoToBarcodeInfo(info);
+    }
+
+    public BarcodeInfo getInfo(long id) {
+        if (mDB == null) {
+            throw new IllegalStateException("Connection to database not open");
+        }
+        Cursor info = mDB.query(DB_TABLE, null, "_id=\"" + id + "\"", null, null, null, null);
+        if (info.getCount() == 0) {
+            return null;
+        }
+        info.moveToFirst();
+        return rawInfoToBarcodeInfo(info);
+    }
+
+    private BarcodeInfo rawInfoToBarcodeInfo(Cursor info) {
         BarcodeInfo codeInfo = new BarcodeInfo();
         codeInfo.setBarcode(info.getString(1));
         codeInfo.setDescription(info.getString(2));

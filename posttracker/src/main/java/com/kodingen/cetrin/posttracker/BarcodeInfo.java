@@ -93,9 +93,12 @@ public class BarcodeInfo {
     }
 
     public String getSendDateString() {
+        if (sendDate == 0) {
+            return "0";
+        }
         Time date = new Time();
         date.set(sendDate);
-        return date.format("%dd.%MM.%yyyy");
+        return date.format("%d.%M.%Y");
     }
 
     public void setSendDate(Long milliseconds) {

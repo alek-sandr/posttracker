@@ -9,7 +9,7 @@
     <string name="barcode">Barcode:</string>
     <string name="description">Description:</string>
     <string name="date">Date:</string>
-    <string name="code">Status Code:</string>
+    <string name="status_code">Status Code:</string>
     <string name="lastOffice">Post Office:</string>
     <string name="lastIndex">Index:</string>
     <string name="noDataReceived">No data received! Check internet connection.</string>
@@ -21,6 +21,15 @@
     <string name="code_saved">Code successfully saved!</string>
     <string name="code_save_failed">Can\'t save code or it already in database.</string>
     <string name="lastcheck">Last check:</string>
-    <string name="delete_code">Delete code</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="wrong_date">Wrong date!</string>
+    <string name="wrong_day">Wrong days number!</string>
+    <string name="edit">Edit</string>
+    <string name="send_date">Send date:</string>
+    <string name="max_delivery_days">Max delivery days:</string>
+    <string name="item_description">Description:</string>
+    <string name="code">Code:</string>
 
 </resources>

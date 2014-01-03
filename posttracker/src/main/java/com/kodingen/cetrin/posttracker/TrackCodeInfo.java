@@ -2,15 +2,12 @@ package com.kodingen.cetrin.posttracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,14 +47,25 @@ public class TrackCodeInfo extends Activity implements TrackInfoReceiver, Dialog
             info = new BarcodeInfo();
             info.setBarcode(trackCode);
         }
-        dbHelper.close();
         if (action.equals(ACTION_TRACKANDSHOW)) { // check trackcode for changes
             progress.setVisibility(View.VISIBLE);
             new TrackTask(trackCode, lang, this).execute();
         } else { // just display information
             displayInfo(info);
         }
-        saveDialog = DialogBuilder.getEditDialog(this, info, this);
+        Executor<BarcodeInfo> ex = new Executor<BarcodeInfo>() {
+            @Override
+            public boolean execute(BarcodeInfo codeInfo) {
+                return dbHelper.addTrackCode(codeInfo);
+            }
+        };
+        saveDialog = DialogBuilder.getEditDialog(this, info, this, ex);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
     }
 
     private void displayInfo(BarcodeInfo codeInfo) {

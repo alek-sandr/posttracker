@@ -19,8 +19,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class MyTrackCodes extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MyTrackCodes extends ActionBarActivity implements DialogResultReceiver, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CM_DELETE_ID = 0;
+    private static final int CM_EDIT_ID = 1;
     private DBHelper dbHelper;
     private SimpleCursorAdapter adapter;
     private ListView lv;
@@ -38,6 +39,7 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
 //        }
 
         dbHelper = new DBHelper(this);
+        dbHelper.open();
         // формируем столбцы сопоставления
         String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK, DBHelper.COL_SENDDATE};
         int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked, R.id.tvDaysLeft };
@@ -71,20 +73,35 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, CM_DELETE_ID, 0, R.string.delete_code);
+        menu.add(0, CM_EDIT_ID, 0, R.string.edit);
+        menu.add(0, CM_DELETE_ID, 1, R.string.delete);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == CM_DELETE_ID) {
-            // получаем из пункта контекстного меню данные по пункту списка
-            AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
-            // извлекаем id записи и удаляем соответствующую запись в БД
-            dbHelper.delRecord(acmi.id);
-            // получаем новый курсор с данными
-            getSupportLoaderManager().getLoader(0).forceLoad();
-            return true;
+        switch (item.getItemId()) {
+            case CM_DELETE_ID:
+                // получаем из пункта контекстного меню данные по пункту списка
+                AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+                // извлекаем id записи и удаляем соответствующую запись в БД
+                dbHelper.delRecord(acmi.id);
+                // получаем новый курсор с данными
+                getSupportLoaderManager().getLoader(0).forceLoad();
+                return true;
+            case CM_EDIT_ID:
+                // получаем из пункта контекстного меню данные по пункту списка
+                AdapterContextMenuInfo acmi2 = (AdapterContextMenuInfo) item.getMenuInfo();
+                BarcodeInfo codeInfo = dbHelper.getInfo(acmi2.id);
+                Executor<BarcodeInfo> ex = new Executor<BarcodeInfo>() {
+                    @Override
+                    public boolean execute(BarcodeInfo barcodeInfo) {
+                        return dbHelper.updateTrackInfo(barcodeInfo) > 0;
+                    }
+                };
+                DialogBuilder.getEditDialog(this, codeInfo, this, ex).show();
+                return true;
         }
+
         return super.onContextItemSelected(item);
     }
 
@@ -126,6 +143,16 @@ public class MyTrackCodes extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> cursorLoader) {
+
+    }
+
+    @Override
+    public void onSuccess() {
+        getSupportLoaderManager().getLoader(0).forceLoad();
+    }
+
+    @Override
+    public void onFail() {
 
     }
 
