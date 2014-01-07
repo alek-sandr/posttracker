@@ -1,7 +1,6 @@
 package com.kodingen.cetrin.posttracker;
 
 import android.text.format.Time;
-import android.widget.TextView;
 
 public class BarcodeInfo {
 
@@ -98,7 +97,7 @@ public class BarcodeInfo {
         }
         Time date = new Time();
         date.set(sendDate);
-        return date.format("%d.%M.%Y");
+        return date.format("%d.%m.%Y");
     }
 
     public void setSendDate(Long milliseconds) {

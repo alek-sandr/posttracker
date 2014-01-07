@@ -72,15 +72,11 @@ public class DialogBuilder {
                         }
                         codeInfo.setMaxDeliveryDays(mDays);
                         boolean result = ex.execute(codeInfo);
-//                        DBHelper dbHelper = new DBHelper(ctx);
-//                        dbHelper.open();
-//                        boolean result = dbHelper.addTrackCode(codeInfo);
                         if (result) {
                             drs.onSuccess();
                         } else {
                             drs.onFail();
                         }
-//                        dbHelper.close();
                         dialog.dismiss();
                     }
                 });
@@ -111,6 +107,6 @@ public class DialogBuilder {
             return -1L;
         }
         sDate.set(day, month, year);
-        return sDate.toMillis(false);
+        return sDate.toMillis(true);
     }
 }

@@ -206,14 +206,15 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
             if (name.equals(DBHelper.COL_SENDDATE)) {
                 long sendDate = cursor.getLong(i);
                 int maxDays = cursor.getInt(i + 1); //COL_DAYSFORDELIVERY next column to COL_SENDDATE
-                int daysLeft = (int) (sendDate + maxDays * 86400000 - currentTime) / 86400000;
-                if (sendDate == 0 || daysLeft == 0) { //fields not specified
+                if (sendDate == 0 || maxDays == 0) { //fields not specified
                     view.setVisibility(View.GONE);
                     return true;
                 }
+                int daysLeft = (int) (sendDate + maxDays * 86400000 - currentTime) / 86400000;
                 ((TextView) view).setText(Integer.toString(daysLeft));
+                view.setBackgroundResource(R.drawable.days_left_indicator_green);
                 if (daysLeft < 5) {
-                    view.setBackgroundColor(Color.RED);
+                    view.setBackgroundResource(R.drawable.days_left_indicator_red);
                 }
                 return true;
             }

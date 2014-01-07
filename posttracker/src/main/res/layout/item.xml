@@ -6,7 +6,7 @@
     android:paddingStart="12dip"
     android:paddingEnd="12dip" >
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
@@ -51,7 +51,8 @@
         android:text="10"
         android:id="@+id/tvDaysLeft"
         android:layout_gravity="center_vertical"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:background="@drawable/days_left_indicator_green"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp" />
 </LinearLayout>
