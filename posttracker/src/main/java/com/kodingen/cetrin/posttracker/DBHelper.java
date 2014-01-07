@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean isCodeInDB(String trackCode) {
-        Cursor cursor = mDB.query(DB_TABLE, null, COL_TRACKCODE + "=\"" + trackCode.toUpperCase() + "\"", null, null, null, null);
+        Cursor cursor = mDB.query(DB_TABLE, null, COL_TRACKCODE + "= ?", new String[] {trackCode.toUpperCase()}, null, null, null);
         return cursor.getCount() != 0;
     }
 
@@ -88,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
-        Cursor info = mDB.query(DB_TABLE, null, COL_TRACKCODE + "=\"" + trackcode.toUpperCase() + "\"", null, null, null, null);
+        Cursor info = mDB.query(DB_TABLE, null, COL_TRACKCODE + "= ?", new String[] {trackcode.toUpperCase()}, null, null, null);
         if (info.getCount() == 0) {
             return null;
         }
@@ -100,7 +100,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
-        Cursor info = mDB.query(DB_TABLE, null, "_id=\"" + id + "\"", null, null, null, null);
+        Cursor info = mDB.query(DB_TABLE, null, "_id = ?", new String[] {Long.toString(id)}, null, null, null);
         if (info.getCount() == 0) {
             return null;
         }
@@ -134,14 +134,14 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
-        mDB.delete(DB_TABLE, "_id = " + id, null);
+        mDB.delete(DB_TABLE, "_id = ?", new String[] {Long.toString(id)});
     }
 
     public int updateTrackInfo(BarcodeInfo info) {
         if (mDB == null) {
             throw new IllegalStateException("Connection to database not open");
         }
-        return mDB.update(DB_TABLE, codeinfoToCV(info), COL_TRACKCODE + "=\"" + info.getBarcode() + "\"", null);
+        return mDB.update(DB_TABLE, codeinfoToCV(info), COL_TRACKCODE + " = ?", new String[] {info.getBarcode()});
     }
 
     private ContentValues codeinfoToCV(BarcodeInfo info) {
