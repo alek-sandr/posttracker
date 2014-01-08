@@ -1,30 +1,32 @@
 package com.kodingen.cetrin.posttracker;
 
-import android.content.Intent;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
+        ActionBar bar = this.getSupportActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        Tab tab = bar.newTab();
+        tab.setText(R.string.track);
+        tab.setTabListener(this);
+        bar.addTab(tab);
+
+        tab = bar.newTab();
+        tab.setText(R.string.my_codes);
+        tab.setTabListener(this);
+        bar.addTab(tab);
+
     }
 
     @Override
@@ -46,52 +48,25 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
+    @Override
+    public void onTabSelected(Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+        if (tab.getText().equals(getResources().getString(R.string.track))) {
+            fragmentTransaction.replace(R.id.container, new TrackFragment());
+            return;
         }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_main, container, false);
+        if (tab.getText().equals(getResources().getString(R.string.my_codes))) {
+            fragmentTransaction.replace(R.id.container, new MyCodesFragment());
+            return;
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        EditText editText = (EditText) findViewById(R.id.trackCode);
-        editText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    track(v);
-                    return true;
-                }
-                return false;
-            }
-        });
+    public void onTabUnselected(Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+
     }
 
-    public void track(View v) {
-        EditText edTrackCode = (EditText) findViewById(R.id.trackCode);
-        String trackCode = edTrackCode.getText().toString().toUpperCase();
-        if (trackCode.length() != 13) {
-            Toast.makeText(this, getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
-            return;
-        }
-        Intent intent = new Intent(TrackCodeInfo.ACTION_TRACKANDSHOW);
-        intent.putExtra(TrackCodeInfo.TRACKCODE, trackCode);
-        startActivity(intent);
-    }
+    @Override
+    public void onTabReselected(Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
-    public void myCodes(View v) {
-        Intent intent = new Intent(this, MyTrackCodes.class);
-        startActivity(intent);
     }
 }

@@ -25,10 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.kodingen.cetrin.posttracker.MyTrackCodes"
-            android:label="@string/title_activity_my_track_codes" >
-        </activity>
-        <activity
             android:name="com.kodingen.cetrin.posttracker.TrackCodeInfo"
             android:label="@string/title_activity_track_code_info" >
             <intent-filter>

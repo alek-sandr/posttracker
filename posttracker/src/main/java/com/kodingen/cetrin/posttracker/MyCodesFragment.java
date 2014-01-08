@@ -3,23 +3,24 @@ package com.kodingen.cetrin.posttracker;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.text.format.Time;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class MyTrackCodes extends ActionBarActivity implements DialogResultReceiver, LoaderManager.LoaderCallbacks<Cursor> {
+public class MyCodesFragment extends Fragment implements DialogResultReceiver, LoaderManager.LoaderCallbacks<Cursor>  {
     private static final int CM_DELETE_ID = 0;
     private static final int CM_EDIT_ID = 1;
     private DBHelper dbHelper;
@@ -27,24 +28,15 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
     private ListView lv;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_my_track_codes);
-        setContentView(R.layout.fragment_my_track_codes);
-//
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, new PlaceholderFragment())
-//                    .commit();
-//        }
-
-        dbHelper = new DBHelper(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_my_track_codes, container, false);
+        dbHelper = new DBHelper(getActivity());
         dbHelper.open();
         // формируем столбцы сопоставления
         String[] from = new String[] { DBHelper.COL_TRACKCODE, DBHelper.COL_DESCRIPTION, DBHelper.COL_LASTCHECK, DBHelper.COL_SENDDATE};
         int[] to = new int[] { R.id.tvTrackCodeItem, R.id.tvItemDescr, R.id.tvItemLastChecked, R.id.tvDaysLeft };
-        adapter = new SimpleCursorAdapter(this, R.layout.item, null, from, to, 0);
-        lv = (ListView) findViewById(R.id.lvMyCodes);
+        adapter = new SimpleCursorAdapter(getActivity(), R.layout.item, null, from, to, 0);
+        lv = (ListView) v.findViewById(R.id.lvMyCodes);
         Time now = new Time();
         now.setToNow();
         long currentTime = now.toMillis(false);
@@ -60,14 +52,21 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
         });
         registerForContextMenu(lv);
         // создаем лоадер для чтения данных
-        getSupportLoaderManager().initLoader(0, null, this);
+        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_track_codes, menu);
-        return true;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        //setContentView(R.layout.activity_my_track_codes);
+//        //setContentView(R.layout.fragment_my_track_codes);
+////
+////        if (savedInstanceState == null) {
+////            getSupportFragmentManager().beginTransaction()
+////                    .add(R.id.container, new PlaceholderFragment())
+////                    .commit();
+////        }
     }
 
     @Override
@@ -82,15 +81,15 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
         switch (item.getItemId()) {
             case CM_DELETE_ID:
                 // получаем из пункта контекстного меню данные по пункту списка
-                AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+                AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 // извлекаем id записи и удаляем соответствующую запись в БД
                 dbHelper.delRecord(acmi.id);
                 // получаем новый курсор с данными
-                getSupportLoaderManager().getLoader(0).forceLoad();
+                getActivity().getSupportLoaderManager().getLoader(0).forceLoad();
                 return true;
             case CM_EDIT_ID:
                 // получаем из пункта контекстного меню данные по пункту списка
-                AdapterContextMenuInfo acmi2 = (AdapterContextMenuInfo) item.getMenuInfo();
+                AdapterView.AdapterContextMenuInfo acmi2 = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 BarcodeInfo codeInfo = dbHelper.getInfo(acmi2.id);
                 Executor<BarcodeInfo> ex = new Executor<BarcodeInfo>() {
                     @Override
@@ -98,7 +97,7 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
                         return dbHelper.updateTrackInfo(barcodeInfo) > 0;
                     }
                 };
-                DialogBuilder.getEditDialog(this, codeInfo, this, ex).show();
+                DialogBuilder.getEditDialog(getActivity(), codeInfo, this, ex).show();
                 return true;
         }
 
@@ -106,25 +105,13 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        getSupportLoaderManager().getLoader(0).forceLoad();
+        getActivity().getSupportLoaderManager().getLoader(0).forceLoad();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (dbHelper.isOpen()) {
             dbHelper.close();
@@ -133,7 +120,7 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new MyCursorLoader(this, dbHelper);
+        return new MyCursorLoader(getActivity(), dbHelper);
     }
 
     @Override
@@ -148,30 +135,12 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
 
     @Override
     public void onSuccess() {
-        getSupportLoaderManager().getLoader(0).forceLoad();
+        getActivity().getSupportLoaderManager().getLoader(0).forceLoad();
     }
 
     @Override
     public void onFail() {
-
     }
-
-//    /**
-//     * A placeholder fragment containing a simple view.
-//     */
-//    public static class PlaceholderFragment extends Fragment {
-//
-//        public PlaceholderFragment() {
-//        }
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                Bundle savedInstanceState) {
-//            View rootView = inflater.inflate(R.layout.fragment_my_track_codes, container, false);
-//            //lv = (ListView) rootView.findViewById(R.id.lvMyCodes);
-//            return rootView;
-//        }
-//    }
 
     static class MyCursorLoader extends CursorLoader {
         private DBHelper dbHelper;
@@ -209,6 +178,8 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
                 if (sendDate == 0 || maxDays == 0) { //fields not specified
                     view.setVisibility(View.GONE);
                     return true;
+                } else {
+                    view.setVisibility(View.VISIBLE);
                 }
                 long daysLeft = (sendDate + maxDays * 86400000L - currentTime) / 86400000L;
                 ((TextView) view).setText(Long.toString(daysLeft));

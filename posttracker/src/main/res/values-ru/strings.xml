@@ -4,6 +4,7 @@
     <string name="app_name">УкрПостТрекер</string>
     <string name="track_code_info">Информация по коду</string>
     <string name="track">Отследить</string>
+    <string name="my_codes">Мои коды</string>
     <string name="wrongTrackCode">Неправильный треккод</string>
     <string name="barcode">Треккод:</string>
     <string name="description">Описание:</string>
