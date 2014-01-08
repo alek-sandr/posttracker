@@ -210,8 +210,8 @@ public class MyTrackCodes extends ActionBarActivity implements DialogResultRecei
                     view.setVisibility(View.GONE);
                     return true;
                 }
-                int daysLeft = (int) (sendDate + maxDays * 86400000 - currentTime) / 86400000;
-                ((TextView) view).setText(Integer.toString(daysLeft));
+                long daysLeft = (sendDate + maxDays * 86400000L - currentTime) / 86400000L;
+                ((TextView) view).setText(Long.toString(daysLeft));
                 view.setBackgroundResource(R.drawable.days_left_indicator_green);
                 if (daysLeft < 5) {
                     view.setBackgroundResource(R.drawable.days_left_indicator_red);
