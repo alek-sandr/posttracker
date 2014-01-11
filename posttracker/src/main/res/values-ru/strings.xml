@@ -32,5 +32,7 @@
     <string name="max_delivery_days">Макс срок (дней):</string>
     <string name="item_description">Описание:</string>
     <string name="code">Треккод:</string>
+    <string name="click_for_detail">Click for detail</string>
+    <string name="change_in_code">Change in code</string>
 
 </resources>

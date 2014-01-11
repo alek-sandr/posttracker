@@ -31,18 +31,30 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
         });
         Button btnTrack = (Button) v.findViewById(R.id.btnTrack);
         btnTrack.setOnClickListener(this);
+        Button btnNotif = (Button) v.findViewById(R.id.btnNotif);
+        btnNotif.setOnClickListener(this);
         return v;
     }
 
     @Override
     public void onClick(View view) {
-        String trackCode = edTrackCode.getText().toString().toUpperCase();
-        if (trackCode.length() != 13) {
-            Toast.makeText(getActivity(), getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
-            return;
+        switch (view.getId()) {
+            case R.id.btnTrack:
+                String trackCode = edTrackCode.getText().toString().toUpperCase();
+                if (trackCode.length() != 13) {
+                    Toast.makeText(getActivity(), getString(R.string.wrongTrackCode), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Intent intent = new Intent(TrackCodeInfo.ACTION_TRACKANDSHOW);
+                intent.putExtra(TrackCodeInfo.TRACKCODE, trackCode);
+                startActivity(intent);
+                break;
+            case R.id.btnNotif:
+                Intent intent1 = new Intent(getActivity(), TrackService.class);
+                Toast.makeText(getActivity(), "start serv", Toast.LENGTH_LONG).show();
+                getActivity().startService(intent1);
+                break;
         }
-        Intent intent = new Intent(TrackCodeInfo.ACTION_TRACKANDSHOW);
-        intent.putExtra(TrackCodeInfo.TRACKCODE, trackCode);
-        startActivity(intent);
+
     }
 }

@@ -32,5 +32,7 @@
     <string name="max_delivery_days">Max delivery days:</string>
     <string name="item_description">Description:</string>
     <string name="code">Code:</string>
+    <string name="click_for_detail">Click for detail</string>
+    <string name="change_in_code">Change in code</string>
 
 </resources>
